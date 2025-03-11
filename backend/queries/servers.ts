@@ -88,18 +88,28 @@ export async function getCategoryCounts(): Promise<CategoryCounts> {
     return { All: 0 };
   }
 
-  const categoryCounts: CategoryCounts = { All: 0 };
+  const categoryCounts: CategoryCounts = { All: data.length };
 
   data.forEach((server) => {
-    if (server.categories) {
-      categoryCounts.All++;
+    if (server.categories && Array.isArray(server.categories)) {
       server.categories.forEach((category: string) => {
         categoryCounts[category] = (categoryCounts[category] || 0) + 1;
       });
     }
   });
 
-  return categoryCounts;
+  const sortedCategories = Object.entries(categoryCounts)
+    .filter(([category]) => category !== 'All')
+    .sort(([, countA], [, countB]) => countB - countA);
+
+  const sortedCategoryCounts: CategoryCounts = { All: categoryCounts.All };
+  sortedCategories.forEach(([category, count]) => {
+    if (count > 0) {
+      sortedCategoryCounts[category] = count;
+    }
+  });
+
+  return sortedCategoryCounts;
 }
 
 export async function searchServers(
