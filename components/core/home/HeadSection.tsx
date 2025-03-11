@@ -3,7 +3,6 @@ import React from 'react';
 import { AnimatedShinyText } from '@/components/magicui/animated-shiny-text';
 import { GridPattern } from '@/components/magicui/grid-pattern';
 import { InteractiveHoverButton } from '@/components/magicui/interactive-hover-button';
-import { Cover } from '@/components/ui/cover';
 import ProtocolBlock from './ProtocolBlock';
 
 const HeadSection = () => {
