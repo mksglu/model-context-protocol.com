@@ -1,0 +1,156 @@
+.blog-content {
+	max-width: 100%;
+	font-size: 1.125rem;
+}
+
+.blog-content h1 {
+	font-size: 1.875rem;
+	font-weight: 700;
+	color: #111827;
+	margin-bottom: 1.5rem;
+	margin-top: 2rem;
+}
+
+.blog-content h2 {
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: #111827;
+	margin-bottom: 1rem;
+	margin-top: 1.5rem;
+}
+
+.blog-content h3 {
+	font-size: 1.25rem;
+	font-weight: 700;
+	color: #111827;
+	margin-bottom: 0.75rem;
+	margin-top: 1.25rem;
+}
+
+.blog-content p {
+	color: #374151;
+	margin-bottom: 1rem;
+	line-height: 1.75;
+}
+
+.blog-content a {
+	color: #ea580c;
+	text-decoration: none;
+}
+
+.blog-content a:hover {
+	text-decoration: underline;
+}
+
+.blog-content ul {
+	list-style-type: disc;
+	padding-left: 1.5rem;
+	margin-bottom: 1rem;
+}
+
+.blog-content ol {
+	list-style-type: decimal;
+	padding-left: 1.5rem;
+	margin-bottom: 1rem;
+}
+
+.blog-content li {
+	margin-bottom: 0.5rem;
+}
+
+.blog-content blockquote {
+	border-left: 4px solid #ea580c;
+	background-color: rgba(251, 146, 60, 0.05);
+	padding: 0.5rem 1rem;
+	margin: 1rem 0;
+	border-radius: 0.125rem;
+}
+
+.blog-content pre {
+	background-color: #f3f4f6;
+	padding: 1rem;
+	border-radius: 0.5rem;
+	overflow-x: auto;
+	margin: 1rem 0;
+}
+
+.blog-content code {
+	background-color: #f3f4f6;
+	padding: 0.125rem 0.375rem;
+	border-radius: 0.25rem;
+	font-size: 0.875rem;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+		'Liberation Mono', 'Courier New', monospace;
+}
+
+.blog-content table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 1rem 0;
+}
+
+.blog-content th {
+	background-color: #f3f4f6;
+	border: 1px solid #d1d5db;
+	padding: 0.5rem 1rem;
+	text-align: left;
+	font-weight: 700;
+}
+
+.blog-content td {
+	border: 1px solid #d1d5db;
+	padding: 0.5rem 1rem;
+}
+
+.blog-content img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 0.5rem;
+	margin: 1rem 0;
+}
+
+.blog-content hr {
+	margin: 2rem 0;
+	border: 0;
+	border-top: 2px solid #e5e7eb;
+}
+
+.blog-content pre.json {
+	background-color: #1e1e1e;
+	color: #d4d4d4;
+	padding: 1.5rem;
+	border-radius: 0.5rem;
+	font-family: 'Consolas', 'Monaco', 'Andale Mono', monospace;
+	line-height: 1.5;
+	position: relative;
+	overflow-x: auto;
+}
+
+.blog-content pre.json::before {
+	content: 'JSON';
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	background-color: #454545;
+	color: #d4d4d4;
+	padding: 0.25rem 0.5rem;
+	border-radius: 0.25rem;
+	font-size: 0.75rem;
+	font-weight: 500;
+}
+
+.blog-content .json-key {
+	color: #9cdcfe;
+}
+
+.blog-content .json-string {
+	color: #ce9178;
+}
+
+.blog-content .json-number {
+	color: #b5cea8;
+}
+
+.blog-content .json-boolean {
+	color: #569cd6;
+}
