@@ -13,47 +13,47 @@
 		font-family: var(--font-ibm-plex-sans), sans-serif;
 	}
 	:root {
-		--background: 204 45% 98%;
-		--foreground: 217 33% 17%;
+		--background: 0 0% 100%;
+		--foreground: 210 12% 16%;
 		--card: 0 0% 100%;
-		--card-foreground: 217 33% 17%;
+		--card-foreground: 210 12% 16%;
 		--popover: 0 0% 100%;
-		--popover-foreground: 217 33% 17%;
-		--primary: 187 75% 53%;
-		--primary-foreground: 217 33% 17%;
-		--secondary: 199 69% 84%;
-		--secondary-foreground: 217 33% 17%;
-		--muted: 199 69% 84%;
-		--muted-foreground: 215 25% 27%;
-		--accent: 342 92% 65%;
+		--popover-foreground: 210 12% 16%;
+		--primary: 212 92% 45%;
+		--primary-foreground: 0 0% 100%;
+		--secondary: 220 14% 96%;
+		--secondary-foreground: 210 12% 16%;
+		--muted: 220 14% 96%;
+		--muted-foreground: 210 40% 40%;
+		--accent: 210 100% 35%;
 		--accent-foreground: 0 0% 100%;
-		--destructive: 0 84.2% 60.2%;
-		--destructive-foreground: 210 40% 98%;
-		--border: 214 32% 91%;
-		--input: 214 32% 91%;
-		--ring: 187 75% 53%;
-		--radius: 1rem;
+		--destructive: 0 80% 50%;
+		--destructive-foreground: 0 0% 100%;
+		--border: 210 18% 87%;
+		--input: 210 18% 87%;
+		--ring: 212 92% 45%;
+		--radius: 0.375rem;
 	}
 	.dark {
-		--background: 217 33% 17%;
-		--foreground: 204 45% 98%;
-		--card: 217 33% 17%;
-		--card-foreground: 204 45% 98%;
-		--popover: 217 33% 17%;
-		--popover-foreground: 204 45% 98%;
-		--primary: 187 75% 53%;
-		--primary-foreground: 217 33% 17%;
-		--secondary: 199 69% 24%;
-		--secondary-foreground: 204 45% 98%;
-		--muted: 199 69% 24%;
-		--muted-foreground: 215 25% 77%;
-		--accent: 342 92% 65%;
+		--background: 210 12% 8%;
+		--foreground: 210 18% 90%;
+		--card: 210 12% 12%;
+		--card-foreground: 210 18% 90%;
+		--popover: 210 12% 12%;
+		--popover-foreground: 210 18% 90%;
+		--primary: 212 92% 45%;
+		--primary-foreground: 0 0% 100%;
+		--secondary: 210 12% 18%;
+		--secondary-foreground: 210 18% 90%;
+		--muted: 210 12% 18%;
+		--muted-foreground: 210 18% 70%;
+		--accent: 210 100% 35%;
 		--accent-foreground: 0 0% 100%;
-		--destructive: 0 62.8% 30.6%;
-		--destructive-foreground: 204 45% 98%;
-		--border: 217 33% 27%;
-		--input: 217 33% 27%;
-		--ring: 187 75% 53%;
+		--destructive: 0 80% 50%;
+		--destructive-foreground: 0 0% 100%;
+		--border: 210 12% 22%;
+		--input: 210 12% 22%;
+		--ring: 212 92% 45%;
 	}
 }
 
@@ -63,5 +63,24 @@
 	}
 	body {
 		@apply bg-background text-foreground;
+	}
+}
+
+/* GitHub-specific styles */
+@layer components {
+	.github-header {
+		@apply h-16 bg-white border-b border-gray-200 flex items-center px-4;
+	}
+	
+	.github-nav-link {
+		@apply text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium;
+	}
+	
+	.github-button {
+		@apply bg-[#2da44e] hover:bg-[#2c974b] text-white font-medium py-1 px-3 rounded-md text-sm;
+	}
+	
+	.github-repo-card {
+		@apply border border-gray-200 rounded-md p-4 bg-white hover:shadow-sm transition-shadow;
 	}
 }

@@ -5,16 +5,16 @@ import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import ShareButton from '@/components/core/blog/ShareButton';
 import ShareButtons from '@/components/core/blog/shareButtons';
-import { GridPattern } from '@/components/magicui/grid-pattern';
 
 import { getBlogPostBySlug } from '@/backend/queries/blog';
 
 import { estimateReadingTime } from '@/helpers/estimateReadingTime';
 
-import { ChevronLeftIcon } from '@radix-ui/react-icons';
+import { ArrowLeft, CalendarDays, Clock } from 'lucide-react';
 import Marked from 'marked-react';
-import { FaBookReader, FaCalendarAlt } from 'react-icons/fa';
+import { FaGithub } from 'react-icons/fa6';
 
 async function BlogDetailPage({ params }: { params: { slug: string } }) {
   const post = await getBlogPostBySlug(params.slug);
@@ -27,43 +27,54 @@ async function BlogDetailPage({ params }: { params: { slug: string } }) {
   const readingTime = estimateReadingTime(post.content);
 
   return (
-    <main className="relative min-h-screen w-full bg-white">
-      <GridPattern
-        className="absolute inset-0 opacity-70"
-        width={30}
-        height={30}
-        strokeDasharray="1 3"
-      />
-
-      <div className="container relative z-10 mx-auto max-w-3xl px-6 pt-8">
-        <Link
-          href="/blog"
-          className="group inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
-        >
-          <ChevronLeftIcon className="mr-1 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-          Back to Blog
-        </Link>
+    <div className="bg-white min-h-screen">
+      {/* Header */}
+      <div className="border-b border-gray-200 bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <Link
+              href="/blog"
+              className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
+            >
+              <ArrowLeft className="mr-1 h-4 w-4" />
+              Back to Blog
+            </Link>
+            <div className="flex items-center space-x-4">
+              <a
+                href="https://modelcontextprotocol.io/introduction"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <FaGithub className="h-5 w-5" />
+              </a>
+              <ShareButton 
+                title={post.title}
+                description={post.description}
+                url={shareUrl}
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
-      <article className="container relative z-10 mx-auto max-w-3xl px-6 py-8">
+      <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6 flex flex-wrap gap-2">
           {post.keywords.map((keyword, index) => (
             <span
               key={index}
-              className="rounded-full bg-gradient-to-r from-orange-500/10 to-pink-500/10 px-2.5 py-1 text-xs font-medium uppercase tracking-wider text-orange-600"
+              className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-600"
             >
               {keyword}
             </span>
           ))}
         </div>
 
-        <h1 className="mb-6 text-3xl font-bold leading-tight text-gray-900 sm:text-4xl md:text-5xl">
-          {post.title}
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">{post.title}</h1>
 
-        <div className="mb-8 flex flex-wrap items-center gap-4 border-b-2 border-gray-100 pb-6 text-sm text-gray-500">
+        <div className="flex items-center gap-4 text-sm text-gray-500 mb-8">
           <div className="flex items-center gap-1">
-            <FaCalendarAlt size={14} className="text-orange-500" />
+            <CalendarDays className="h-4 w-4 text-gray-400" />
             <span>
               {new Date(post.created_date).toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -73,39 +84,29 @@ async function BlogDetailPage({ params }: { params: { slug: string } }) {
             </span>
           </div>
           <div className="flex items-center gap-1">
-            <FaBookReader size={14} className="text-orange-500" />
+            <Clock className="h-4 w-4 text-gray-400" />
             <span>{readingTime} min read</span>
-          </div>
-          <div className="ml-auto flex items-center gap-2">
-            <span className="text-sm text-gray-500">Share:</span>
-            <ShareButtons post={post} shareUrl={shareUrl} />
           </div>
         </div>
 
-        <p className="mb-8 text-xl leading-relaxed text-gray-700">{post.description}</p>
-
-        <div className="blog-content">
+        <div className="prose prose-gray max-w-none">
           <Marked>{post.content}</Marked>
         </div>
 
-        <div className="mt-16 border-t-2 border-gray-100 pt-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <div className="flex items-center justify-between">
             <Link
               href="/blog"
-              className="group inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
+              className="inline-flex items-center text-sm text-blue-600 hover:text-blue-800"
             >
-              <ChevronLeftIcon className="mr-1 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-              Back to Blog
+              <ArrowLeft className="mr-1 h-4 w-4" />
+              Back to all posts
             </Link>
-
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-gray-500">Share this article:</span>
-              <ShareButtons post={post} shareUrl={shareUrl} />
-            </div>
+            <ShareButtons url={shareUrl} title={post.title} />
           </div>
         </div>
       </article>
-    </main>
+    </div>
   );
 }
 

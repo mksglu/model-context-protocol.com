@@ -7,7 +7,7 @@ import { Card } from '@/backend/types/types';
 import { cn } from '@/lib/utils';
 
 import { Star } from 'lucide-react';
-import { FaGithub } from 'react-icons/fa6';
+import { FaGithub, FaCodeBranch } from 'react-icons/fa6';
 
 type InfiniteMovingCardsProps = {
   items: Card[];
@@ -21,7 +21,7 @@ type InfiniteMovingCardsProps = {
 const InfiniteMovingCards = ({
   items,
   direction = 'left',
-  speed = 'fast',
+  speed = 'medium',
   pauseOnHover = true,
   className,
   type = 'servers',
@@ -43,7 +43,7 @@ const InfiniteMovingCards = ({
   const getSpeed = useCallback(() => {
     if (containerRef.current) {
       if (speed === 'fast') {
-        containerRef.current.style.setProperty('--animation-duration', '1s');
+        containerRef.current.style.setProperty('--animation-duration', '20s');
       } else if (speed === 'medium') {
         containerRef.current.style.setProperty('--animation-duration', '40s');
       } else {
@@ -77,8 +77,8 @@ const InfiniteMovingCards = ({
       ref={containerRef}
       className={cn('scroller relative z-20 mx-auto max-w-7xl overflow-hidden', className)}
     >
-      <div className="pointer-events-none absolute bottom-0 left-0 top-0 z-10 w-[100px] bg-gradient-to-r from-gray-50 to-transparent" />
-      <div className="pointer-events-none absolute bottom-0 right-0 top-0 z-10 w-[100px] bg-gradient-to-l from-gray-50 to-transparent" />
+      <div className="pointer-events-none absolute bottom-0 left-0 top-0 z-10 w-[100px] bg-gradient-to-r from-white to-transparent" />
+      <div className="pointer-events-none absolute bottom-0 right-0 top-0 z-10 w-[100px] bg-gradient-to-l from-white to-transparent" />
 
       <ul
         ref={scrollerRef}
@@ -90,72 +90,58 @@ const InfiniteMovingCards = ({
       >
         {items.map((item) => (
           <li
-            className="group relative h-[250px] w-[350px] max-w-full flex-shrink-0 overflow-hidden rounded-2xl bg-gradient-to-b from-white to-gray-50/50 p-6 transition-all"
+            className="relative h-[130px] w-[350px] max-w-full flex-shrink-0 overflow-hidden rounded-md border border-gray-200 bg-white p-4 transition-all hover:shadow-sm"
             key={item.id}
           >
-            {/* Subtle Border */}
-            <div className="absolute inset-0 rounded-2xl ring-1 ring-black/[0.04]" />
-            
             {/* Card Content Container */}
-            <div className="relative z-20 flex h-full flex-col">
+            <div className="relative flex h-full flex-col">
               {/* Header Section */}
-              <div className="flex items-start justify-between">
-                <div className="flex-1 space-y-1">
-                  <div className="flex items-center gap-3">
-                    <h3 className="truncate text-base font-medium text-gray-800">
-                      {item.name}
-                    </h3>
-                    <div className="flex items-center gap-1 text-amber-500">
-                      <Star className="h-3.5 w-3.5 fill-current" />
-                      <span className="text-xs font-medium">{item.stars}</span>
-                    </div>
+              <div className="flex items-center gap-2">
+                <FaGithub className="h-4 w-4 text-gray-600" />
+                <h3 className="truncate text-base font-semibold text-blue-600 hover:underline">
+                  {item.name}
+                </h3>
+              </div>
+              
+              {/* Description */}
+              <p className="mt-2 line-clamp-2 text-sm text-gray-600">
+                {item.description || 'No description provided'}
+              </p>
+              
+              {/* Footer with metadata */}
+              <div className="mt-auto flex flex-wrap items-center gap-4 pt-2 text-xs text-gray-500">
+                {item.language && (
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-primary" />
+                    <span>{item.language}</span>
                   </div>
-                  {item.language && (
-                    <div className="flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full bg-primary/60" />
-                      <p className="text-xs text-gray-500">{item.language}</p>
-                    </div>
-                  )}
+                )}
+                
+                <div className="flex items-center gap-1">
+                  <Star className="h-3.5 w-3.5" />
+                  <span>{item.stars.toLocaleString()}</span>
                 </div>
                 
-                <a
-                  href={item.html_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-shrink-0 text-gray-400 transition-colors hover:text-gray-600"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <FaGithub className="h-4 w-4" />
-                </a>
-              </div>
-
-              {/* Description */}
-              <div className="mt-4">
-                <p className="line-clamp-3 text-sm leading-relaxed text-gray-600">
-                  {item.description}
-                </p>
-              </div>
-
-              {/* Categories */}
-              {item.categories && item.categories.length > 0 && (
-                <div className="mt-auto flex flex-wrap gap-1.5 pt-4">
-                  {item.categories.map((category, index) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center rounded-full bg-black/[0.02] px-2 py-0.5 text-[10px] font-medium text-gray-600"
-                    >
-                      {category}
-                    </span>
-                  ))}
+                <div className="flex items-center gap-1">
+                  <FaCodeBranch className="h-3 w-3" />
+                  <span>-</span>
                 </div>
-              )}
-
-              {/* Hover Overlay */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-black/[0.02] to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                
+                {item.categories && item.categories.length > 0 && (
+                  <div className="flex items-center gap-1">
+                    <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-600">
+                      {item.categories[0]}
+                    </span>
+                    {item.categories.length > 1 && (
+                      <span className="text-[10px]">+{item.categories.length - 1}</span>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Full Card Link */}
-            <Link href={`/${type}/${item.slug}`} className="absolute inset-0 z-30" />
+            <Link href={`/${type}/${item.slug}`} className="absolute inset-0 z-10" />
           </li>
         ))}
       </ul>

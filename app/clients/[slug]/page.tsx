@@ -3,16 +3,14 @@ import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { GridPattern } from '@/components/magicui/grid-pattern';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { getClientById } from '@/backend/queries/clients';
 
-import { BarChart3, BookOpen, ChevronLeft, Code, ExternalLink, Star, Zap } from 'lucide-react';
+import { ArrowLeft, ExternalLink, GitBranch, Star } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import { FaGithub } from 'react-icons/fa6';
 
 type AnalysisData = {
   is_mcp: string;
@@ -23,8 +21,10 @@ type AnalysisData = {
   };
 };
 
-export default async function ClientPage({ params }: { params: { slug: string } }) {
-  const client = await getClientById(params.slug);
+export default async function ClientDetailPage({ params }: { params: { slug: string } }) {
+  const slug = params.slug;
+
+  const client = await getClientById(slug);
 
   if (!client) {
     notFound();
@@ -49,210 +49,216 @@ export default async function ClientPage({ params }: { params: { slug: string } 
     console.error('JSON parsing error:', error);
   }
 
-  const getFirstTabKey = () => {
-    if (analysisData?.analysis) {
-      const firstKey = Object.keys(analysisData.analysis)[0];
-      return firstKey.toLowerCase().replace(/\s+/g, '-');
-    }
-    return 'default-tab';
-  };
+  // Group analysis data into categories for better organization
+  const groupedAnalysis = analysisData?.analysis ? 
+    Object.entries(analysisData.analysis).reduce((acc, [key, value]) => {
+      // Extract category from key (e.g., "Architecture and Design Patterns" -> "Architecture")
+      const category = key.split(' ')[0].toLowerCase();
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push({ key, value });
+      return acc;
+    }, {} as Record<string, { key: string, value: string }[]>) : {};
 
-  const createTabValue = (key: string) => {
-    return key.toLowerCase().replace(/\s+/g, '-');
+  // Get the first category as default tab
+  const getDefaultTab = () => {
+    if (Object.keys(groupedAnalysis).length > 0) {
+      return Object.keys(groupedAnalysis)[0];
+    }
+    return 'overview';
   };
 
   return (
-    <div className="relative min-h-screen">
-      <div className="absolute inset-0 -z-10 overflow-hidden opacity-70">
-        <GridPattern
-          width={36}
-          height={36}
-          x={-1}
-          y={-1}
-          className="absolute inset-0 h-full w-full fill-blue-50 stroke-blue-100 [mask-image:radial-gradient(ellipse_at_center,white_40%,transparent_80%)]"
-          strokeDasharray="2 4"
-          strokeWidth={1.5}
-        />
+    <div className="bg-white min-h-screen">
+      {/* Header */}
+      <div className="border-b border-gray-200 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center">
+            <Link href="/clients" className="text-gray-600 hover:text-gray-900">
+              <ArrowLeft className="h-5 w-5" />
+            </Link>
+            <h1 className="ml-4 text-xl font-semibold text-gray-900">{client.name}</h1>
+          </div>
+        </div>
       </div>
 
-      <div className="container relative z-10 mx-auto max-w-7xl px-4 py-12">
-        <div className="mb-8">
-          <Link href="/clients" className="inline-block">
-            <Button
-              variant="ghost"
-              className="group flex items-center gap-1.5 text-gray-600 hover:text-gray-900"
-            >
-              <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-              Back to clients
-            </Button>
-          </Link>
-        </div>
-
-        <div className="relative mb-10 overflow-hidden rounded-3xl border border-gray-200 bg-white p-8 backdrop-blur-sm">
-          <div className="absolute right-0 top-0 -z-10 h-64 w-64 rounded-bl-full bg-gradient-to-bl from-blue-100 via-indigo-50 to-transparent opacity-70"></div>
-
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-start gap-6">
-              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-500 via-indigo-500 to-purple-500 text-2xl font-bold text-white shadow-lg shadow-blue-200 ring-4 ring-blue-50">
-                {client.language ? client.language[0].toUpperCase() : '🚀'}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Main Content */}
+          <div className="flex-1">
+            <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+              <div className="px-6 py-5 border-b border-gray-200">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-xl font-semibold text-gray-900">{client.name}</h2>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {client.language || 'Unknown'}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-sm text-gray-600">{client.description}</p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1 text-gray-600">
+                      <Star className="h-4 w-4 fill-current text-amber-400" />
+                      <span className="font-medium">{client.stars}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-gray-600">
+                      <GitBranch className="h-4 w-4" />
+                      <span className="font-medium">-</span>
+                    </div>
+                    <a
+                      href={client.html_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-3 py-1 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                    >
+                      <FaGithub className="mr-1.5 h-4 w-4" />
+                      View on GitHub
+                    </a>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h1 className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-3xl font-bold text-transparent md:text-4xl">
-                  {client.name}
-                </h1>
-                <p className="mt-3 max-w-3xl text-lg text-slate-600">
-                  {client.description || 'No description available'}
-                </p>
 
-                {client.categories && client.categories.length > 0 && (
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {client.categories.map((category, idx) => (
+              {/* Categories */}
+              {client.categories && client.categories.length > 0 && (
+                <div className="px-6 py-3 border-b border-gray-200 bg-gray-50">
+                  <div className="flex flex-wrap gap-2">
+                    {client.categories.map((category, index) => (
                       <Badge
-                        key={idx}
+                        key={index}
                         variant="secondary"
-                        className="rounded-full border-0 bg-gradient-to-r from-blue-50 to-indigo-50 px-3 py-1 text-xs font-medium text-blue-700 shadow-sm"
+                        className="bg-blue-50 text-blue-600 hover:bg-blue-100"
                       >
                         {category}
                       </Badge>
                     ))}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
+
+              {/* Analysis Content */}
+              {analysisData && Object.keys(groupedAnalysis).length > 0 && (
+                <div className="px-6 py-6">
+                  <Tabs defaultValue={getDefaultTab()} className="w-full">
+                    {/* Simplified Tab Navigation - GitHub Style */}
+                    <div className="border-b border-gray-200">
+                      <TabsList className="h-auto p-0 bg-transparent flex flex-nowrap overflow-x-auto">
+                        {Object.keys(groupedAnalysis).map((category) => (
+                          <TabsTrigger
+                            key={category}
+                            value={category}
+                            className="rounded-none border-b-2 border-transparent px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 data-[state=active]:border-orange-500 data-[state=active]:text-gray-900 data-[state=active]:bg-transparent transition-none"
+                          >
+                            {/* Capitalize first letter */}
+                            {category.charAt(0).toUpperCase() + category.slice(1)}
+                          </TabsTrigger>
+                        ))}
+                      </TabsList>
+                    </div>
+
+                    {/* Tab Content - No Animation */}
+                    {Object.entries(groupedAnalysis).map(([category, items]) => (
+                      <TabsContent 
+                        key={category} 
+                        value={category} 
+                        className="mt-6 pt-0 animate-none"
+                      >
+                        <div className="space-y-8">
+                          {items.map(({ key, value }) => (
+                            <div key={key} className="space-y-3">
+                              <h3 className="text-lg font-medium text-gray-900">
+                                {/* Show only the part after the first word */}
+                                {key.split(' ').slice(1).join(' ')}
+                              </h3>
+                              <div className="prose prose-gray max-w-none overflow-x-auto">
+                                <ReactMarkdown>{value}</ReactMarkdown>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </TabsContent>
+                    ))}
+                  </Tabs>
+                </div>
+              )}
+
+              {/* MCP Compatibility */}
+              {analysisData && (
+                <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+                  <div className="flex flex-col gap-2">
+                    <h3 className="text-sm font-medium text-gray-900">MCP Compatibility</h3>
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        className={
+                          analysisData.is_mcp.toLowerCase() === 'yes'
+                            ? 'bg-green-100 text-green-800'
+                            : analysisData.is_mcp.toLowerCase() === 'partial'
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : 'bg-red-100 text-red-800'
+                        }
+                      >
+                        {analysisData.is_mcp}
+                      </Badge>
+                      <span className="text-sm text-gray-600">{analysisData.justification}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          <div className="space-y-6 lg:col-span-1">
-            <Card className="overflow-hidden rounded-3xl border border-gray-200 shadow-none">
-              <CardHeader className="border-b bg-gradient-to-r from-white to-blue-50/50 pb-6">
-                <CardTitle className="flex items-center gap-2 text-xl text-blue-800">
-                  <BarChart3 className="h-5 w-5 text-blue-500" />
-                  Repository Details
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="divide-y divide-blue-50">
-                  <div className="flex items-center justify-between px-6 py-5 transition-colors hover:bg-blue-50/30">
-                    <div className="font-medium text-slate-600">Language</div>
-                    {client.language ? (
-                      <div className="flex items-center gap-2 font-medium text-blue-700">
-                        <Code className="h-4 w-4" />
-                        {client.language}
+          {/* Sidebar */}
+          <div className="w-full lg:w-80 flex-shrink-0">
+            <div className="sticky top-20">
+              <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
+                <div className="px-4 py-3 border-b border-gray-200">
+                  <h3 className="text-sm font-medium text-gray-900">About</h3>
+                </div>
+                <div className="px-4 py-3">
+                  <div className="space-y-3">
+                    <div>
+                      <h4 className="text-xs font-medium text-gray-500">Repository</h4>
+                      <a
+                        href={client.html_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1 flex items-center text-sm text-blue-600 hover:underline"
+                      >
+                        {client.html_url.replace(/^https?:\/\//, '')}
+                        <ExternalLink className="ml-1 h-3 w-3" />
+                      </a>
+                    </div>
+                    {client.language && (
+                      <div>
+                        <h4 className="text-xs font-medium text-gray-500">Language</h4>
+                        <p className="mt-1 text-sm text-gray-900">{client.language}</p>
                       </div>
-                    ) : (
-                      <div className="text-gray-500">Not specified</div>
+                    )}
+                    <div>
+                      <h4 className="text-xs font-medium text-gray-500">Stars</h4>
+                      <p className="mt-1 text-sm text-gray-900">{client.stars.toLocaleString()}</p>
+                    </div>
+                    {client.categories && client.categories.length > 0 && (
+                      <div>
+                        <h4 className="text-xs font-medium text-gray-500">Categories</h4>
+                        <div className="mt-1 flex flex-wrap gap-1">
+                          {client.categories.map((category, index) => (
+                            <span
+                              key={index}
+                              className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-800"
+                            >
+                              {category}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
                     )}
                   </div>
-                  <div className="flex items-center justify-between px-6 py-5 transition-colors hover:bg-blue-50/30">
-                    <div className="font-medium text-slate-600">Repository</div>
-                    <a
-                      href={client.html_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 font-medium text-blue-600 transition-colors hover:text-blue-800"
-                    >
-                      {client.name.length > 20 ? `${client.name.substring(0, 20)}...` : client.name}
-                      <ExternalLink className="h-3.5 w-3.5" />
-                    </a>
-                  </div>
-                  <div className="flex items-center justify-between px-6 py-5 transition-colors hover:bg-blue-50/30">
-                    <div className="font-medium text-slate-600">Stars</div>
-                    <div className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text font-medium text-transparent">
-                      <Star className="h-5 w-5 fill-blue-400 text-blue-500" />
-                      {client.stars.toLocaleString()}
-                    </div>
-                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="lg:col-span-2">
-            {client.ai_analysis ? (
-              <Card className="rounded-3xl border border-gray-200 shadow-none">
-                <CardHeader className="rounded-t-3xl border-b bg-gradient-to-r from-white to-blue-50/50 pb-6">
-                  <CardTitle className="flex items-center gap-2 text-xl text-blue-800">
-                    <Zap className="h-5 w-5 text-blue-500" />
-                    AI Analysis
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  {analysisData?.analysis ? (
-                    <Tabs defaultValue={getFirstTabKey()} className="w-full" orientation="vertical">
-                      <div className="flex flex-col md:flex-row">
-                        <div className="w-full border-r border-blue-100 md:w-[280px] md:min-w-[280px]">
-                          <TabsList className="flex h-auto flex-col items-stretch rounded-l-3xl rounded-t-none bg-blue-50/70 p-2">
-                            {Object.entries(analysisData.analysis).map(([key], idx) => {
-                              const tabValue = createTabValue(key);
-                              const keyParts = key.split(' ');
-                              const mainTitle = keyParts[0];
-                              const subtitle = keyParts.slice(1).join(' ');
-
-                              return (
-                                <TabsTrigger
-                                  key={idx}
-                                  value={tabValue}
-                                  className="mb-1 justify-start rounded-lg px-4 py-3 text-left transition-all data-[state=active]:border data-[state=active]:border-gray-200 data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-none"
-                                >
-                                  <div className="flex flex-col items-start">
-                                    <span className="text-md font-medium">{mainTitle}</span>
-                                    {subtitle && (
-                                      <span className="mt-0.5 max-w-[200px] truncate text-xs text-slate-500">
-                                        {subtitle}
-                                      </span>
-                                    )}
-                                  </div>
-                                </TabsTrigger>
-                              );
-                            })}
-                          </TabsList>
-                        </div>
-
-                        <div className="flex-1 rounded-r-3xl bg-white p-8">
-                          {Object.entries(analysisData.analysis).map(([key, content]) => {
-                            const tabValue = createTabValue(key);
-                            return (
-                              <TabsContent
-                                key={key}
-                                value={tabValue}
-                                className="mt-0 h-full data-[state=active]:animate-in data-[state=active]:fade-in-50"
-                              >
-                                <div className="h-full">
-                                  <h3 className="mb-4 text-xl font-semibold text-blue-700">
-                                    {key}
-                                  </h3>
-                                  <div className="whitespace-pre-wrap text-lg leading-relaxed text-slate-700">
-                                    {content}
-                                  </div>
-                                </div>
-                              </TabsContent>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </Tabs>
-                  ) : (
-                    <div className="p-8">
-                      <div className="prose max-w-none text-slate-700">
-                        <ReactMarkdown>{client.ai_analysis}</ReactMarkdown>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ) : (
-              <Card className="flex h-full items-center justify-center overflow-hidden rounded-3xl border-0 bg-white p-8 shadow-[0_15px_50px_-15px_rgba(59,130,246,0.2)] backdrop-blur-sm">
-                <div className="text-center">
-                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-50">
-                    <BookOpen className="h-8 w-8 text-blue-300" />
-                  </div>
-                  <p className="text-lg text-slate-500">
-                    No technical analysis available for this repository.
-                  </p>
-                </div>
-              </Card>
-            )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

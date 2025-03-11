@@ -1,76 +1,185 @@
-import React from 'react';
+'use client';
 
-import { AnimatedShinyText } from '@/components/magicui/animated-shiny-text';
-import { GridPattern } from '@/components/magicui/grid-pattern';
-import { InteractiveHoverButton } from '@/components/magicui/interactive-hover-button';
-import ProtocolBlock from './ProtocolBlock';
+import { useEffect, useState } from 'react';
+
+import Link from 'next/link';
+
+import { createClient } from '@/backend/supabase/client';
+
+import { ArrowRight, Server, Code } from 'lucide-react';
+import { FaGithub } from 'react-icons/fa6';
 
 const HeadSection = () => {
-  return (
-    <main className="relative min-h-[85vh] flex flex-col items-center justify-center px-4 py-16">
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-background to-accent/10" />
-        <GridPattern 
-          className="absolute inset-0 opacity-40" 
-          width={24} 
-          height={24} 
-          strokeDasharray="2 2" 
-          strokeWidth={1}
-          stroke="currentColor"
-        />
-      </div>
+  const [stats, setStats] = useState({
+    serverCount: 0,
+    clientCount: 0,
+    loading: true
+  });
 
-      <div className="relative z-10 w-full max-w-6xl mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-8 items-center">
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const supabase = createClient();
+        
+        // Get server count
+        const { count: serverCount, error: serverError } = await supabase
+          .from('servers')
+          .select('id', { count: 'exact', head: true })
+          .eq('is_active', true);
+          
+        if (serverError) throw serverError;
+        
+        // Get client count
+        const { count: clientCount, error: clientError } = await supabase
+          .from('clients')
+          .select('id', { count: 'exact', head: true })
+          .eq('is_active', true);
+          
+        if (clientError) throw clientError;
+        
+        setStats({
+          serverCount: serverCount || 0,
+          clientCount: clientCount || 0,
+          loading: false
+        });
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+        setStats(prev => ({ ...prev, loading: false }));
+      }
+    };
+    
+    fetchStats();
+  }, []);
+
+  // Format the count with a "+" if it's greater than or equal to 10
+  const formatCount = (count: number) => {
+    if (count >= 10) {
+      return `${count}+`;
+    }
+    return count.toString();
+  };
+
+  return (
+    <div className="bg-white py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Hero Section */}
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
           {/* Left Column - Text Content */}
-          <div className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-8">
-            <div className="flex items-center justify-center lg:justify-start">
-              <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-b from-background/80 to-background p-2 backdrop-blur-xl">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative flex items-center space-x-2 px-4 py-2">
-                  <span className="text-xl">⚡️</span>
-                  <AnimatedShinyText shimmerWidth={200} className="text-primary font-medium">
-                    USB-C of LLM tools 
-                  </AnimatedShinyText>
+          <div className="max-w-2xl">
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6">
+              Model Context Protocol Directory
+            </h1>
+            <p className="text-xl text-gray-600 mb-8">
+              Discover and connect with high-performance MCP servers and clients. The premier platform for AI model deployment.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link 
+                href="/servers" 
+                className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#2da44e] hover:bg-[#2c974b]"
+              >
+                Explore Servers
+              </Link>
+              <Link 
+                href="/clients" 
+                className="inline-flex items-center justify-center px-5 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              >
+                Browse Clients
+              </Link>
+            </div>
+          </div>
+          
+          {/* Right Column - Stats Card */}
+          <div className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+            <div className="flex items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">MCP Ecosystem Stats</h2>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="border border-gray-200 rounded-md p-4">
+                <div className="flex items-center text-gray-600 mb-1">
+                  <Server className="h-4 w-4 mr-1" />
+                  <span className="text-sm">Servers</span>
+                </div>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.loading ? '...' : formatCount(stats.serverCount)}
+                </p>
+                <p className="text-sm text-gray-500">Available servers</p>
+              </div>
+              <div className="border border-gray-200 rounded-md p-4">
+                <div className="flex items-center text-gray-600 mb-1">
+                  <Code className="h-4 w-4 mr-1" />
+                  <span className="text-sm">Clients</span>
+                </div>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.loading ? '...' : formatCount(stats.clientCount)}
+                </p>
+                <p className="text-sm text-gray-500">Client implementations</p>
+              </div>
+              <div className="border border-gray-200 rounded-md p-4 col-span-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">Official Documentation</p>
+                    <p className="text-md font-semibold text-gray-900">modelcontextprotocol.io</p>
+                  </div>
+                  <Link 
+                    href="https://modelcontextprotocol.io/introduction" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
+                  >
+                    View Docs
+                    <ArrowRight className="ml-1 h-3 w-3" />
+                  </Link>
                 </div>
               </div>
             </div>
-
-            <div className="space-y-6">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
-                <span className="relative">
-                  <span className="absolute -inset-1 rounded-lg bg-gradient-to-r from-primary/50 via-accent/50 to-primary/50 blur-2xl opacity-30" />
-                  <span className="relative bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-                    model-context-protocol.com
-                  </span>
-                </span>
-              </h1>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-center lg:items-start gap-4">
-              <InteractiveHoverButton 
-                className="bg-gradient-to-r from-primary to-accent text-white hover:opacity-90 transition-opacity"
-              >
-                Start Exploring
-              </InteractiveHoverButton>
-              <InteractiveHoverButton 
-                className="bg-secondary/80 backdrop-blur-sm text-secondary-foreground hover:bg-secondary/90"
-              >
-                Add Your Server
-              </InteractiveHoverButton>
-            </div>
           </div>
-
-          {/* Right Column - Terminal */}
-          <div className="relative">
-            <div className="absolute -inset-4 rounded-2xl bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 blur-2xl opacity-50" />
-            <div className="relative transform hover:scale-[1.02] transition-transform duration-300">
-              <ProtocolBlock />
+        </div>
+        
+        {/* Features Section */}
+        <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="border border-gray-200 rounded-md p-6 hover:shadow-md transition-shadow">
+            <div className="w-12 h-12 bg-blue-100 rounded-md flex items-center justify-center mb-4">
+              <Server className="h-6 w-6 text-blue-600" />
             </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Find MCP Servers</h3>
+            <p className="text-gray-600 mb-4">Discover and connect to high-performance MCP servers for your AI applications.</p>
+            <Link href="/servers" className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+              Browse Servers
+              <ArrowRight className="ml-1 h-3 w-3" />
+            </Link>
+          </div>
+          
+          <div className="border border-gray-200 rounded-md p-6 hover:shadow-md transition-shadow">
+            <div className="w-12 h-12 bg-green-100 rounded-md flex items-center justify-center mb-4">
+              <Code className="h-6 w-6 text-green-600" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Explore Clients</h3>
+            <p className="text-gray-600 mb-4">Find client libraries and tools to integrate MCP into your applications.</p>
+            <Link href="/clients" className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
+              View Clients
+              <ArrowRight className="ml-1 h-3 w-3" />
+            </Link>
+          </div>
+          
+          <div className="border border-gray-200 rounded-md p-6 hover:shadow-md transition-shadow">
+            <div className="w-12 h-12 bg-purple-100 rounded-md flex items-center justify-center mb-4">
+              <FaGithub className="h-6 w-6 text-purple-600" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Contribute</h3>
+            <p className="text-gray-600 mb-4">Join the MCP community and contribute to the ecosystem&apos;s growth.</p>
+            <Link 
+              href="https://modelcontextprotocol.io/introduction" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center"
+            >
+              Official Website
+              <ArrowRight className="ml-1 h-3 w-3" />
+            </Link>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 
