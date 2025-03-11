@@ -5,14 +5,11 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import Search from '@/components/layout/Search';
-
 import { Menu, X } from 'lucide-react';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -69,28 +66,13 @@ const Header = () => {
               </nav>
             </div>
 
-            {/* Search */}
-            <div className="flex items-center space-x-4">
-              <div className="hidden md:block relative">
-                <div className="flex items-center h-8 w-64 rounded-md border border-gray-300 bg-gray-50 px-3 text-sm">
-                  <span className="text-gray-500 text-xs">/</span>
-                  <input 
-                    type="text" 
-                    placeholder="Search or jump to..." 
-                    className="ml-2 flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-500"
-                    onClick={() => setSearchOpen(true)}
-                  />
-                </div>
-              </div>
-
-              {/* Mobile Menu Button */}
-              <button
-                className="md:hidden text-gray-600 hover:text-gray-900"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              >
-                {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
-            </div>
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden text-gray-600 hover:text-gray-900"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
         </div>
       </header>
@@ -121,23 +103,6 @@ const Header = () => {
               >
                 Blog
               </Link>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Search Modal */}
-      {searchOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center pt-16">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl">
-            <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-              <h3 className="text-lg font-medium">Search</h3>
-              <button onClick={() => setSearchOpen(false)}>
-                <X className="h-5 w-5 text-gray-500" />
-              </button>
-            </div>
-            <div className="p-4">
-              <Search open={searchOpen} onOpenChange={setSearchOpen} />
             </div>
           </div>
         </div>
