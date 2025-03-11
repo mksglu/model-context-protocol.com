@@ -2,6 +2,7 @@ import './globals.css';
 
 import type { Metadata } from 'next';
 import { IBM_Plex_Sans } from 'next/font/google';
+import { Analytics } from "@vercel/analytics/react";
 
 import ScrollToTop from '@/components/core/home/ScrollToTop';
 import Footer from '@/components/layout/Footer';
@@ -34,6 +35,7 @@ export default function RootLayout({
           {children}
           <Footer />
           <ScrollToTop />
+          <Analytics />
         </SupabaseProvider>
       </body>
     </html>
