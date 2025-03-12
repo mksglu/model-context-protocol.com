@@ -2,6 +2,7 @@ import React from 'react';
 
 import Link from 'next/link';
 
+import CategoryList from '@/components/core/servers/CategoryList';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import {
@@ -23,6 +24,7 @@ import {
 import { Code, Search, Star } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa6';
 
+// Server Component
 interface ServersPageProps {
   searchParams: {
     page?: string;
@@ -46,27 +48,29 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="border-b border-gray-200 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="min-w-0 flex-1">
-              <h1 className="text-2xl font-semibold leading-tight text-gray-900">MCP Servers</h1>
-              <p className="mt-1 text-sm text-gray-600">
+              <h1 className="text-xl font-semibold leading-tight text-gray-900 sm:text-2xl">
+                MCP Servers
+              </h1>
+              <p className="mt-1 text-xs text-gray-600 sm:text-sm">
                 Browse and discover Model Context Protocol compatible servers
               </p>
             </div>
-            <div className="mt-4 flex space-x-3 md:ml-4 md:mt-0">
+            <div className="mt-3 flex flex-wrap gap-2 sm:gap-3 md:ml-4 md:mt-0">
               <a
                 href="https://github.com/mksglu/mcp-base"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none"
+                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none sm:px-4 sm:py-2 sm:text-sm"
               >
-                <FaGithub className="mr-2 h-4 w-4" />
+                <FaGithub className="mr-1.5 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
                 View on GitHub
               </a>
               <Link
                 href="/docs"
-                className="inline-flex items-center rounded-md border border-transparent bg-[#2da44e] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#2c974b] focus:outline-none"
+                className="inline-flex items-center rounded-md border border-transparent bg-[#2da44e] px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-[#2c974b] focus:outline-none sm:px-4 sm:py-2 sm:text-sm"
               >
                 Documentation
               </Link>
@@ -75,13 +79,13 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-6 lg:flex-row">
-          {/* Sidebar */}
+      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+        <div className="flex flex-col gap-4 sm:gap-6 lg:flex-row">
+          {/* Sidebar - Fixed on top for mobile, sidebar for desktop */}
           <div className="w-full flex-shrink-0 lg:w-64">
-            <div className="sticky top-20">
+            <div className="lg:sticky lg:top-20">
               {/* Search */}
-              <div className="mb-6">
+              <div className="mb-4 sm:mb-6">
                 <form action="/servers" method="GET">
                   <div className="relative">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -102,50 +106,12 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                 </form>
               </div>
 
-              {/* Categories */}
-              <div className="overflow-hidden rounded-md border border-gray-200 bg-white">
-                <div className="border-b border-gray-200 px-4 py-3">
-                  <h2 className="text-sm font-medium text-gray-900">Categories</h2>
-                </div>
-                <div className="px-4 py-3">
-                  <ul className="space-y-2">
-                    <li>
-                      <Link
-                        href="/servers"
-                        className={`flex items-center justify-between text-sm ${
-                          currentCategory === 'All'
-                            ? 'font-medium text-blue-600'
-                            : 'text-gray-600 hover:text-gray-900'
-                        }`}
-                      >
-                        <span>All</span>
-                        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
-                          {categoryCounts.All}
-                        </span>
-                      </Link>
-                    </li>
-                    {Object.entries(categoryCounts)
-                      .filter(([category]) => category !== 'All')
-                      .map(([category, count]) => (
-                        <li key={category}>
-                          <Link
-                            href={`/servers?category=${encodeURIComponent(category)}`}
-                            className={`flex items-center justify-between text-sm ${
-                              currentCategory === category
-                                ? 'font-medium text-blue-600'
-                                : 'text-gray-600 hover:text-gray-900'
-                            }`}
-                          >
-                            <span>{category}</span>
-                            <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
-                              {count}
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                  </ul>
-                </div>
-              </div>
+              {/* Categories - Client Component olarak değiştirildi */}
+              <CategoryList
+                categoryCounts={categoryCounts}
+                currentCategory={currentCategory}
+                searchQuery={searchQuery}
+              />
             </div>
           </div>
 
@@ -153,15 +119,15 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
           <div className="flex-1">
             {/* Results */}
             <div className="overflow-hidden rounded-md border border-gray-200 bg-white">
-              <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-                <h2 className="text-sm font-medium text-gray-900">
+              <div className="flex items-center justify-between border-b border-gray-200 px-3 py-2 sm:px-4 sm:py-3">
+                <h2 className="text-xs font-medium text-gray-900 sm:text-sm">
                   {searchQuery
                     ? `Results for "${searchQuery}"`
                     : currentCategory === 'All'
                       ? 'All servers'
                       : `${currentCategory} servers`}
                 </h2>
-                <span className="text-sm text-gray-500">All</span>
+                <span className="text-xs text-gray-500 sm:text-sm">All</span>
               </div>
 
               {/* Server List */}
@@ -169,25 +135,28 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                 {servers.length > 0 ? (
                   servers.map((server) => (
                     <li key={server.id} className="hover:bg-gray-50">
-                      <Link href={`/servers/${server.slug}`} className="block px-4 py-4">
+                      <Link
+                        href={`/servers/${server.slug}`}
+                        className="block px-3 py-3 sm:px-4 sm:py-4"
+                      >
                         <div className="flex items-start">
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2">
-                              <h3 className="truncate text-base font-medium text-blue-600 hover:underline">
+                              <h3 className="truncate text-sm font-medium text-blue-600 hover:underline sm:text-base">
                                 {server.name}
                               </h3>
                               <div className="flex items-center gap-1 text-gray-600">
-                                <Star className="h-4 w-4 fill-current text-amber-400" />
+                                <Star className="h-3 w-3 fill-current text-amber-400 sm:h-4 sm:w-4" />
                                 <span className="text-xs font-medium">{server.stars}</span>
                               </div>
                             </div>
-                            <p className="mt-1 line-clamp-2 text-sm text-gray-600">
+                            <p className="mt-1 line-clamp-2 text-xs text-gray-600 sm:text-sm">
                               {server.description || 'No description provided'}
                             </p>
-                            <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
+                            <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-gray-500 sm:gap-3">
                               {server.language && (
                                 <div className="flex items-center gap-1.5">
-                                  <span className="h-2.5 w-2.5 rounded-full bg-primary" />
+                                  <span className="h-2 w-2 rounded-full bg-primary sm:h-2.5 sm:w-2.5" />
                                   <span>{server.language}</span>
                                 </div>
                               )}
@@ -197,7 +166,7 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                                     <Badge
                                       key={index}
                                       variant="secondary"
-                                      className="bg-blue-50 text-blue-600 hover:bg-blue-100"
+                                      className="bg-blue-50 text-xs text-blue-600 hover:bg-blue-100"
                                     >
                                       {category}
                                     </Badge>
@@ -211,10 +180,10 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                     </li>
                   ))
                 ) : (
-                  <div className="px-4 py-8 text-center">
-                    <Code className="mx-auto h-10 w-10 text-gray-400" />
+                  <div className="px-4 py-6 text-center sm:py-8">
+                    <Code className="mx-auto h-8 w-8 text-gray-400 sm:h-10 sm:w-10" />
                     <h3 className="mt-2 text-sm font-medium text-gray-900">No servers found</h3>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-xs text-gray-500 sm:text-sm">
                       {searchQuery
                         ? `No servers matching "${searchQuery}" in ${
                             currentCategory === 'All'
@@ -227,10 +196,10 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                               : `the ${currentCategory} category`
                           }`}
                     </p>
-                    <div className="mt-6">
+                    <div className="mt-4 sm:mt-6">
                       <Link
                         href="/servers"
-                        className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none"
+                        className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none sm:px-4 sm:py-2 sm:text-sm"
                       >
                         View all servers
                       </Link>
@@ -241,9 +210,9 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
 
               {/* Pagination */}
               {servers.length > 0 && totalPages > 1 && (
-                <div className="border-t border-gray-200 px-4 py-3 sm:px-6">
+                <div className="border-t border-gray-200 px-3 py-2 sm:px-6 sm:py-3">
                   <Pagination>
-                    <PaginationContent>
+                    <PaginationContent className="flex flex-wrap justify-center gap-1">
                       {currentPage > 1 && (
                         <PaginationItem>
                           <PaginationPrevious
@@ -252,7 +221,7 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                                 ? `&category=${encodeURIComponent(currentCategory)}`
                                 : ''
                             }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`}
-                            className="hover:bg-blue-500"
+                            className="text-xs hover:bg-blue-500 sm:text-sm"
                           />
                         </PaginationItem>
                       )}
@@ -273,7 +242,7 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                                     : ''
                                 }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`}
                                 isActive={page === currentPage}
-                                className="hover:bg-blue-500"
+                                className="h-8 w-8 text-xs hover:bg-blue-500 sm:h-10 sm:w-10 sm:text-sm"
                               >
                                 {page}
                               </PaginationLink>
@@ -288,7 +257,7 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                         ) {
                           return (
                             <PaginationItem key={page}>
-                              <PaginationEllipsis />
+                              <PaginationEllipsis className="text-xs sm:text-sm" />
                             </PaginationItem>
                           );
                         }
@@ -304,7 +273,7 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                                 ? `&category=${encodeURIComponent(currentCategory)}`
                                 : ''
                             }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`}
-                            className="hover:bg-blue-500"
+                            className="text-xs hover:bg-blue-500 sm:text-sm"
                           />
                         </PaginationItem>
                       )}

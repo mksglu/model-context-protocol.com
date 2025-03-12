@@ -2,6 +2,7 @@ import React from 'react';
 
 import Link from 'next/link';
 
+import CategoryList from '@/components/core/clients/CategoryList';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import {
@@ -79,9 +80,9 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
         <div className="flex flex-col gap-6 lg:flex-row">
           {/* Sidebar */}
           <div className="w-full flex-shrink-0 lg:w-64">
-            <div className="sticky top-20">
+            <div className="lg:sticky lg:top-20">
               {/* Search */}
-              <div className="mb-6">
+              <div className="mb-4 sm:mb-6">
                 <form action="/clients" method="GET">
                   <div className="relative">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -102,50 +103,12 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
                 </form>
               </div>
 
-              {/* Categories */}
-              <div className="overflow-hidden rounded-md border border-gray-200 bg-white">
-                <div className="border-b border-gray-200 px-4 py-3">
-                  <h2 className="text-sm font-medium text-gray-900">Categories</h2>
-                </div>
-                <div className="px-4 py-3">
-                  <ul className="space-y-2">
-                    <li>
-                      <Link
-                        href="/clients"
-                        className={`flex items-center justify-between text-sm ${
-                          currentCategory === 'All'
-                            ? 'font-medium text-blue-600'
-                            : 'text-gray-600 hover:text-gray-900'
-                        }`}
-                      >
-                        <span>All</span>
-                        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
-                          {categoryCounts.All}
-                        </span>
-                      </Link>
-                    </li>
-                    {Object.entries(categoryCounts)
-                      .filter(([category]) => category !== 'All')
-                      .map(([category, count]) => (
-                        <li key={category}>
-                          <Link
-                            href={`/clients?category=${encodeURIComponent(category)}`}
-                            className={`flex items-center justify-between text-sm ${
-                              currentCategory === category
-                                ? 'font-medium text-blue-600'
-                                : 'text-gray-600 hover:text-gray-900'
-                            }`}
-                          >
-                            <span>{category}</span>
-                            <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
-                              {count}
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                  </ul>
-                </div>
-              </div>
+              {/* Categories - Client Component */}
+              <CategoryList
+                categoryCounts={categoryCounts}
+                currentCategory={currentCategory}
+                searchQuery={searchQuery}
+              />
             </div>
           </div>
 
@@ -153,15 +116,15 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
           <div className="flex-1">
             {/* Results */}
             <div className="overflow-hidden rounded-md border border-gray-200 bg-white">
-              <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-                <h2 className="text-sm font-medium text-gray-900">
+              <div className="flex items-center justify-between border-b border-gray-200 px-3 py-2 sm:px-4 sm:py-3">
+                <h2 className="text-xs font-medium text-gray-900 sm:text-sm">
                   {searchQuery
                     ? `Results for "${searchQuery}"`
                     : currentCategory === 'All'
                       ? 'All clients'
                       : `${currentCategory} clients`}
                 </h2>
-                <span className="text-sm text-gray-500">All</span>
+                <span className="text-xs text-gray-500 sm:text-sm">All</span>
               </div>
 
               {/* Client List */}
@@ -169,25 +132,28 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
                 {clients.length > 0 ? (
                   clients.map((client) => (
                     <li key={client.id} className="hover:bg-gray-50">
-                      <Link href={`/clients/${client.slug}`} className="block px-4 py-4">
+                      <Link
+                        href={`/clients/${client.slug}`}
+                        className="block px-3 py-3 sm:px-4 sm:py-4"
+                      >
                         <div className="flex items-start">
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2">
-                              <h3 className="truncate text-base font-medium text-blue-600 hover:underline">
+                              <h3 className="truncate text-sm font-medium text-blue-600 hover:underline sm:text-base">
                                 {client.name}
                               </h3>
                               <div className="flex items-center gap-1 text-gray-600">
-                                <Star className="h-4 w-4 fill-current text-amber-400" />
+                                <Star className="h-3 w-3 fill-current text-amber-400 sm:h-4 sm:w-4" />
                                 <span className="text-xs font-medium">{client.stars}</span>
                               </div>
                             </div>
-                            <p className="mt-1 line-clamp-2 text-sm text-gray-600">
+                            <p className="mt-1 line-clamp-2 text-xs text-gray-600 sm:text-sm">
                               {client.description || 'No description provided'}
                             </p>
-                            <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
+                            <div className="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-gray-500 sm:gap-3">
                               {client.language && (
                                 <div className="flex items-center gap-1.5">
-                                  <span className="h-2.5 w-2.5 rounded-full bg-primary" />
+                                  <span className="h-2 w-2 rounded-full bg-primary sm:h-2.5 sm:w-2.5" />
                                   <span>{client.language}</span>
                                 </div>
                               )}
@@ -197,7 +163,7 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
                                     <Badge
                                       key={index}
                                       variant="secondary"
-                                      className="bg-blue-50 text-blue-600 hover:bg-blue-100"
+                                      className="bg-blue-50 text-xs text-blue-600 hover:bg-blue-100"
                                     >
                                       {category}
                                     </Badge>
@@ -211,10 +177,10 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
                     </li>
                   ))
                 ) : (
-                  <div className="px-4 py-8 text-center">
-                    <Code className="mx-auto h-10 w-10 text-gray-400" />
+                  <div className="px-4 py-6 text-center sm:py-8">
+                    <Code className="mx-auto h-8 w-8 text-gray-400 sm:h-10 sm:w-10" />
                     <h3 className="mt-2 text-sm font-medium text-gray-900">No clients found</h3>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <p className="mt-1 text-xs text-gray-500 sm:text-sm">
                       {searchQuery
                         ? `No clients matching "${searchQuery}" in ${
                             currentCategory === 'All'
@@ -227,10 +193,10 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
                               : `the ${currentCategory} category`
                           }`}
                     </p>
-                    <div className="mt-6">
+                    <div className="mt-4 sm:mt-6">
                       <Link
                         href="/clients"
-                        className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none"
+                        className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none sm:px-4 sm:py-2 sm:text-sm"
                       >
                         View all clients
                       </Link>
@@ -241,9 +207,9 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
 
               {/* Pagination */}
               {clients.length > 0 && totalPages > 1 && (
-                <div className="border-t border-gray-200 px-4 py-3 sm:px-6">
+                <div className="border-t border-gray-200 px-3 py-2 sm:px-6 sm:py-3">
                   <Pagination>
-                    <PaginationContent>
+                    <PaginationContent className="flex flex-wrap justify-center gap-1">
                       {currentPage > 1 && (
                         <PaginationItem>
                           <PaginationPrevious
@@ -252,6 +218,7 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
                                 ? `&category=${encodeURIComponent(currentCategory)}`
                                 : ''
                             }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`}
+                            className="text-xs hover:bg-blue-500 sm:text-sm"
                           />
                         </PaginationItem>
                       )}
@@ -272,6 +239,7 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
                                     : ''
                                 }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`}
                                 isActive={page === currentPage}
+                                className="h-8 w-8 text-xs hover:bg-blue-500 sm:h-10 sm:w-10 sm:text-sm"
                               >
                                 {page}
                               </PaginationLink>
@@ -286,7 +254,7 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
                         ) {
                           return (
                             <PaginationItem key={page}>
-                              <PaginationEllipsis />
+                              <PaginationEllipsis className="text-xs sm:text-sm" />
                             </PaginationItem>
                           );
                         }
@@ -302,6 +270,7 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
                                 ? `&category=${encodeURIComponent(currentCategory)}`
                                 : ''
                             }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`}
+                            className="text-xs hover:bg-blue-500 sm:text-sm"
                           />
                         </PaginationItem>
                       )}
