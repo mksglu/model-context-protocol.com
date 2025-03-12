@@ -9,16 +9,7 @@ import { Menu, X } from 'lucide-react';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -33,45 +24,56 @@ const Header = () => {
 
   return (
     <>
-      <header className={`sticky top-0 z-50 w-full bg-white border-b border-gray-200 transition-shadow ${scrolled ? 'shadow-sm' : ''}`}>
-        <div className="container mx-auto px-4">
+      <header className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white transition-shadow duration-300">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            {/* Logo and Navigation */}
-            <div className="flex items-center space-x-4">
-              {/* Logo */}
+            <div className="flex items-center space-x-6 md:space-x-8">
               <Link href="/" className="flex items-center">
-                <span className="text-xl font-semibold text-gray-900">MCP Directory</span>
+                <span className="rounded-md bg-gradient-to-r from-black to-gray-900 px-2 py-1 text-xl font-bold text-white">
+                  MCP Directory
+                </span>
               </Link>
 
-              {/* Desktop Navigation */}
-              <nav className="hidden md:flex items-center space-x-1">
-                <Link 
-                  href="/servers" 
-                  className={`px-3 py-2 text-sm font-medium ${pathname?.startsWith('/servers') ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900'}`}
+              <nav className="hidden items-center space-x-1 md:flex">
+                <Link
+                  href="/servers"
+                  className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+                    pathname?.startsWith('/servers')
+                      ? 'border-b-2 border-neutral-800 text-neutral-900'
+                      : 'text-neutral-600 hover:text-neutral-800'
+                  }`}
                 >
                   Servers
                 </Link>
-                <Link 
-                  href="/clients" 
-                  className={`px-3 py-2 text-sm font-medium ${pathname?.startsWith('/clients') ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900'}`}
+                <Link
+                  href="/clients"
+                  className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+                    pathname?.startsWith('/clients')
+                      ? 'border-b-2 border-neutral-800 text-neutral-900'
+                      : 'text-neutral-600 hover:text-neutral-800'
+                  }`}
                 >
                   Clients
                 </Link>
-                <Link 
-                  href="/blog" 
-                  className={`px-3 py-2 text-sm font-medium ${pathname?.startsWith('/blog') ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900'}`}
+                <Link
+                  href="/blog"
+                  className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+                    pathname?.startsWith('/blog')
+                      ? 'border-b-2 border-neutral-800 text-neutral-900'
+                      : 'text-neutral-600 hover:text-neutral-800'
+                  }`}
                 >
                   Blog
                 </Link>
               </nav>
             </div>
 
-            {/* Mobile Menu Button */}
             <button
-              className="md:hidden text-gray-600 hover:text-gray-900"
+              className="text-neutral-700 hover:text-neutral-900 focus:outline-none md:hidden"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Menü"
             >
-              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
@@ -79,33 +81,52 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-white md:hidden pt-16">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex flex-col space-y-4">
-              <Link 
-                href="/servers" 
-                className="px-3 py-2 text-base font-medium text-gray-900 border-b border-gray-200"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Servers
-              </Link>
-              <Link 
-                href="/clients" 
-                className="px-3 py-2 text-base font-medium text-gray-900 border-b border-gray-200"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Clients
-              </Link>
-              <Link 
-                href="/blog" 
-                className="px-3 py-2 text-base font-medium text-gray-900 border-b border-gray-200"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Blog
-              </Link>
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[1.5px] md:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+
+          <div className="fixed right-0 top-16 z-40 w-full overflow-y-auto rounded-bl-lg bg-white shadow-lg md:hidden">
+            <div className="px-4 py-6">
+              <div className="flex flex-col">
+                <Link
+                  href="/servers"
+                  className={`px-2 py-3 text-base font-medium ${
+                    pathname?.startsWith('/servers')
+                      ? 'bg-neutral-100 text-neutral-900'
+                      : 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Servers
+                </Link>
+                <Link
+                  href="/clients"
+                  className={`px-2 py-3 text-base font-medium ${
+                    pathname?.startsWith('/clients')
+                      ? 'bg-neutral-100 text-neutral-900'
+                      : 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Clients
+                </Link>
+                <Link
+                  href="/blog"
+                  className={`px-2 py-3 text-base font-medium ${
+                    pathname?.startsWith('/blog')
+                      ? 'bg-neutral-100 text-neutral-900'
+                      : 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Blog
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );

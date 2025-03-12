@@ -32,10 +32,11 @@ const Footer = () => {
     <footer className="border-t border-gray-200 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 py-8 md:grid-cols-3">
-          {/* Logo and Copyright */}
           <div className="col-span-1">
             <Link href="/" className="flex items-center">
-              <span className="text-xl font-semibold text-gray-900">MCP Directory</span>
+              <span className="rounded-md bg-gradient-to-r from-black to-gray-900 px-2 py-1 text-xl font-bold text-white">
+                MCP Directory
+              </span>
             </Link>
             <p className="mt-4 text-sm text-gray-600">Model Context Protocol Directory</p>
             <p className="mt-2 text-sm text-gray-500">
@@ -43,7 +44,6 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Footer Links */}
           {footerLinks.map((section) => (
             <div key={section.title}>
               <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-900">
@@ -73,7 +73,6 @@ const Footer = () => {
           ))}
         </div>
 
-        {/* Bottom Links */}
         <div className="border-t border-gray-200 py-4">
           <div className="flex flex-col items-center justify-between md:flex-row">
             <div className="mb-4 text-xs text-gray-500 md:mb-0">

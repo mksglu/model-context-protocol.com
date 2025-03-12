@@ -92,6 +92,7 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                       name="search"
                       placeholder="Find a server..."
                       defaultValue={searchQuery}
+                      autoComplete="off"
                       className="block w-full rounded-md border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                     />
                     {currentCategory !== 'All' && (
@@ -251,6 +252,7 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                                 ? `&category=${encodeURIComponent(currentCategory)}`
                                 : ''
                             }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`}
+                            className="hover:bg-blue-500"
                           />
                         </PaginationItem>
                       )}
@@ -271,6 +273,7 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                                     : ''
                                 }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`}
                                 isActive={page === currentPage}
+                                className="hover:bg-blue-500"
                               >
                                 {page}
                               </PaginationLink>
@@ -301,6 +304,7 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                                 ? `&category=${encodeURIComponent(currentCategory)}`
                                 : ''
                             }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`}
+                            className="hover:bg-blue-500"
                           />
                         </PaginationItem>
                       )}
