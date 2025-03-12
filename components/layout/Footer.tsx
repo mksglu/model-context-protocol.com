@@ -34,9 +34,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 gap-8 py-8 md:grid-cols-3">
           <div className="col-span-1">
             <Link href="/" className="flex items-center">
-              <span className="rounded-md bg-gradient-to-r from-black to-gray-900 px-2 py-1 text-xl font-bold text-white">
-                MCP Directory
-              </span>
+              <span className="text-xl font-bold text-gray-900">MCP Directory</span>
             </Link>
             <p className="mt-4 text-sm text-gray-600">Model Context Protocol Directory</p>
             <p className="mt-2 text-sm text-gray-500">

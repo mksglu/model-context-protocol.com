@@ -27,10 +27,10 @@ async function BlogDetailPage({ params }: { params: { slug: string } }) {
   const readingTime = estimateReadingTime(post.content);
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="mx-auto max-w-3xl px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <Link
               href="/blog"
@@ -48,17 +48,13 @@ async function BlogDetailPage({ params }: { params: { slug: string } }) {
               >
                 <FaGithub className="h-5 w-5" />
               </a>
-              <ShareButton 
-                title={post.title}
-                description={post.description}
-                url={shareUrl}
-              />
+              <ShareButton title={post.title} description={post.description} url={shareUrl} />
             </div>
           </div>
         </div>
       </div>
 
-      <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <article className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6 flex flex-wrap gap-2">
           {post.keywords.map((keyword, index) => (
             <span
@@ -70,9 +66,9 @@ async function BlogDetailPage({ params }: { params: { slug: string } }) {
           ))}
         </div>
 
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">{post.title}</h1>
+        <h1 className="mb-4 text-3xl font-bold text-gray-900">{post.title}</h1>
 
-        <div className="flex items-center gap-4 text-sm text-gray-500 mb-8">
+        <div className="mb-8 flex items-center gap-4 border-b border-gray-200 pb-8 text-sm text-gray-500">
           <div className="flex items-center gap-1">
             <CalendarDays className="h-4 w-4 text-gray-400" />
             <span>
@@ -89,11 +85,11 @@ async function BlogDetailPage({ params }: { params: { slug: string } }) {
           </div>
         </div>
 
-        <div className="prose prose-gray max-w-none">
+        <div className="prose prose-gray blog-content max-w-none">
           <Marked>{post.content}</Marked>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-gray-200">
+        <div className="mt-12 border-t border-gray-200 pt-8">
           <div className="flex items-center justify-between">
             <Link
               href="/blog"
