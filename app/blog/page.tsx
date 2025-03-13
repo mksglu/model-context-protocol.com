@@ -9,6 +9,9 @@ import { estimateReadingTime } from '@/helpers/estimateReadingTime';
 import { CalendarDays, Clock } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa6';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function BlogPage() {
   const posts = await getAllBlogPosts();
 
