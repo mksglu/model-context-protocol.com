@@ -1,4 +1,7 @@
-# Model Context Protocol (MCP)
+## Model Context Protocol (MCP)
+Live Preview: https://model-context-protocol.com/
+
+![image](https://github.com/user-attachments/assets/be0674fc-99c3-48bb-8d21-03b15f971ab8)
 
 ## Project Description
 
@@ -55,8 +58,6 @@ GITHUB_TOKEN=your_github_token
    yarn dev
    # or
    pnpm dev
-   # or
-   bun dev
    ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
