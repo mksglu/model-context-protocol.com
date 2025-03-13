@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Model Context Protocol (MCP)
 
-## Getting Started
+## Project Description
 
-First, run the development server:
+Model Context Protocol is a platform developed to discover and list high-performance MCP servers. As a leading platform for AI model deployment, MCP provides a comprehensive directory of MCP servers offering real-time accessibility, performance metrics, and seamless integration capabilities.
+
+## Technology Stack
+
+- **Frontend**: Next.js 14, TypeScript
+- **Styling**: Tailwind CSS, Radix UI components
+- **Backend**: Supabase
+
+## Setup
+
+### Prerequisites
+
+- npm, yarn, pnpm
+- Supabase account
+
+### Environment Variables
+
+Create a `.env.local` file in the root directory and add the following variables:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+NEXT_PUBLIC_SITE_URL=https://model-context-protocol.com
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+GITHUB_TOKEN=your_github_token
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   git clone https://github.com/mksglu/model-context-protocol.git
+   cd model-context-protocol
+   ```
 
-## Learn More
+2. Install dependencies:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Start the development server:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   # or
+   bun dev
+   ```
 
-## Deploy on Vercel
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Commands
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev`: Starts the development server
+- `npm run build`: Builds the application for production
+- `npm run start`: Starts the compiled application
+- `npm run lint`: Runs code quality checks
+- `npm run format`: Formats the code
+- `npm run format:check`: Checks formatting
+
+## Contributing
+
+We welcome your contributions! Please follow these steps before submitting a PR:
+
+1. Create a new branch
+2. Make and test your changes
+3. Ensure it follows the existing coding style
+4. Submit a PR
+
+## Contact
+
+For any questions or feedback, please reach out through [Mert Koseoglu's website](https://mksg.lu/).
