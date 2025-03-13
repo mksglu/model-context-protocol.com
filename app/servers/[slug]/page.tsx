@@ -4,11 +4,18 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { Badge } from '@/components/ui/badge';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { getServerById, updateServerStars } from '@/backend/queries/servers';
 
-import { ArrowLeft, ExternalLink, GitBranch, Star } from 'lucide-react';
+import { ExternalLink, GitBranch, HomeIcon, Star } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa6';
 import ReactMarkdown from 'react-markdown';
 
@@ -85,11 +92,25 @@ export default async function ServerDetailPage({ params }: { params: { slug: str
       {/* Header */}
       <div className="border-b border-gray-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center">
-            <Link href="/servers" className="text-gray-600 hover:text-gray-900">
-              <ArrowLeft className="h-5 w-5" />
-            </Link>
-            <h1 className="ml-4 text-xl font-semibold text-gray-900">{server.name}</h1>
+          <div className="flex flex-col gap-2">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <Link href="/">
+                    <HomeIcon size={16} aria-hidden="true" />
+                    <span className="sr-only">Home</span>
+                  </Link>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <Link href="/servers">Servers</Link>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{server.name}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
           </div>
         </div>
       </div>
