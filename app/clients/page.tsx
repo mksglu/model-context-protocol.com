@@ -32,6 +32,9 @@ interface ClientsPageProps {
   };
 }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function ClientsPage({ searchParams }: ClientsPageProps) {
   const currentPage = searchParams.page ? parseInt(searchParams.page) : 1;
   const currentCategory = searchParams.category || 'All';

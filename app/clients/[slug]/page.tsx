@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { getClientById } from '@/backend/queries/clients';
+import { getClientById, updateClientStars } from '@/backend/queries/clients';
 
 import { ArrowLeft, ExternalLink, GitBranch, Star } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa6';
@@ -29,6 +29,13 @@ export default async function ClientDetailPage({ params }: { params: { slug: str
   if (!client) {
     notFound();
   }
+
+  const repoFullName = client.html_url.replace('https://github.com/', '');
+  const starsUpdate = await updateClientStars(repoFullName, {
+    GITHUB_TOKEN: process.env.GITHUB_TOKEN,
+  });
+
+  const currentStars = starsUpdate.success ? starsUpdate.stars : client.stars;
 
   let analysisData: AnalysisData | null = null;
   try {
@@ -106,7 +113,7 @@ export default async function ClientDetailPage({ params }: { params: { slug: str
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1 text-gray-600">
                       <Star className="h-4 w-4 fill-current text-amber-400" />
-                      <span className="font-medium">{client.stars}</span>
+                      <span className="font-medium">{currentStars}</span>
                     </div>
                     <div className="flex items-center gap-1 text-gray-600">
                       <GitBranch className="h-4 w-4" />
@@ -220,7 +227,7 @@ export default async function ClientDetailPage({ params }: { params: { slug: str
                     )}
                     <div>
                       <h4 className="text-xs font-medium text-gray-500">Stars</h4>
-                      <p className="mt-1 text-sm text-gray-900">{client.stars.toLocaleString()}</p>
+                      <p className="mt-1 text-sm text-gray-900">{currentStars.toLocaleString()}</p>
                     </div>
                     {client.categories && client.categories.length > 0 && (
                       <div>
