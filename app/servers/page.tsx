@@ -33,6 +33,9 @@ interface ServersPageProps {
   };
 }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function ServersPage({ searchParams }: ServersPageProps) {
   const currentPage = searchParams.page ? parseInt(searchParams.page) : 1;
   const currentCategory = searchParams.category || 'All';

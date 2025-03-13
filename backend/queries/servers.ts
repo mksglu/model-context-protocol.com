@@ -193,3 +193,52 @@ export async function getServerById(slug: string) {
 
   return data as ResponseServer;
 }
+
+export async function updateServerStars(repoFullName: string, env?: { GITHUB_TOKEN?: string }) {
+  const supabase = createClient();
+
+  try {
+    const headers: HeadersInit = {
+      Accept: 'application/vnd.github.v3+json',
+      'User-Agent': 'Cloudflare-Worker',
+    };
+
+    if (env?.GITHUB_TOKEN) {
+      headers['Authorization'] = `token ${env.GITHUB_TOKEN}`;
+    } else if (process.env.GITHUB_TOKEN) {
+      headers['Authorization'] = `token ${process.env.GITHUB_TOKEN}`;
+    }
+
+    const response = await fetch(`https://api.github.com/repos/${repoFullName}`, { headers });
+
+    if (!response.ok) {
+      throw new Error(`GitHub API error: ${response.status} - ${response.statusText}`);
+    }
+
+    const repoData = await response.json();
+    const stars = repoData.stargazers_count;
+
+    const { error: serverError } = await supabase
+      .from('servers')
+      .update({ stars })
+      .eq('html_url', `https://github.com/${repoFullName}`);
+
+    if (serverError) {
+      throw new Error(`Error updating server stars: ${serverError.message}`);
+    }
+
+    const { error: repoError } = await supabase
+      .from('github_repos')
+      .update({ stars })
+      .eq('full_name', repoFullName);
+
+    if (repoError) {
+      console.error(`Error updating github_repos stars: ${repoError.message}`);
+    }
+
+    return { success: true, stars };
+  } catch (error) {
+    console.error('Error in updateServerStars:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+  }
+}

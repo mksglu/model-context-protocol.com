@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { getServerById } from '@/backend/queries/servers';
+import { getServerById, updateServerStars } from '@/backend/queries/servers';
 
 import { ArrowLeft, ExternalLink, GitBranch, Star } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa6';
@@ -29,6 +29,13 @@ export default async function ServerDetailPage({ params }: { params: { slug: str
   if (!server) {
     notFound();
   }
+
+  const repoFullName = server.html_url.replace('https://github.com/', '');
+  const starsUpdate = await updateServerStars(repoFullName, {
+    GITHUB_TOKEN: process.env.GITHUB_TOKEN,
+  });
+
+  const currentStars = starsUpdate.success ? starsUpdate.stars : server.stars;
 
   let analysisData: AnalysisData | null = null;
   try {
@@ -106,7 +113,7 @@ export default async function ServerDetailPage({ params }: { params: { slug: str
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1 text-gray-600">
                       <Star className="h-4 w-4 fill-current text-amber-400" />
-                      <span className="font-medium">{server.stars}</span>
+                      <span className="font-medium">{currentStars}</span>
                     </div>
                     <div className="flex items-center gap-1 text-gray-600">
                       <GitBranch className="h-4 w-4" />
@@ -219,7 +226,7 @@ export default async function ServerDetailPage({ params }: { params: { slug: str
                     )}
                     <div>
                       <h4 className="text-xs font-medium text-gray-500">Stars</h4>
-                      <p className="mt-1 text-sm text-gray-900">{server.stars.toLocaleString()}</p>
+                      <p className="mt-1 text-sm text-gray-900">{currentStars.toLocaleString()}</p>
                     </div>
                     {server.categories && server.categories.length > 0 && (
                       <div>
