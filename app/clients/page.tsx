@@ -87,18 +87,20 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
               </p>
             </div>
             <div className="mt-4 flex space-x-3 md:ml-4 md:mt-0">
-              <a
-                href="https://github.com/mksglu/mcp-base"
+              <Link
+                href="https://github.com/mksglu/model-context-protocol.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none"
               >
                 <FaGithub className="mr-2 h-4 w-4" />
                 View on GitHub
-              </a>
+              </Link>
               <Link
-                href="/docs"
-                className="inline-flex items-center rounded-md border border-transparent bg-[#2da44e] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#2c974b] focus:outline-none"
+                href="https://modelcontextprotocol.io/introduction"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center rounded-md border border-transparent bg-[#2da44e] px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-[#2c974b] focus:outline-none sm:px-4 sm:py-2 sm:text-sm"
               >
                 Documentation
               </Link>

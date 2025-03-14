@@ -16,32 +16,32 @@ export default async function BlogPage() {
   const posts = await getAllBlogPosts();
 
   return (
-    <div className="bg-white min-h-screen">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="border-b border-gray-200 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div className="flex-1 min-w-0">
-              <h1 className="text-2xl font-semibold text-gray-900 leading-tight">
-                MCP Blog
-              </h1>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-2xl font-semibold leading-tight text-gray-900">MCP Blog</h1>
               <p className="mt-1 text-sm text-gray-600">
                 Latest insights, tutorials, and updates from the Model Context Protocol team
               </p>
             </div>
-            <div className="mt-4 md:mt-0 md:ml-4 flex space-x-3">
-              <a
-                href="https://github.com/mksglu/mcp-base"
+            <div className="mt-4 flex space-x-3 md:ml-4 md:mt-0">
+              <Link
+                href="https://github.com/mksglu/model-context-protocol.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
+                className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none"
               >
                 <FaGithub className="mr-2 h-4 w-4" />
                 View on GitHub
-              </a>
+              </Link>
               <Link
-                href="/docs"
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#2da44e] hover:bg-[#2c974b] focus:outline-none"
+                href="https://modelcontextprotocol.io/introduction"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center rounded-md border border-transparent bg-[#2da44e] px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-[#2c974b] focus:outline-none sm:px-4 sm:py-2 sm:text-sm"
               >
                 Documentation
               </Link>
@@ -50,7 +50,7 @@ export default async function BlogPage() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Blog Posts */}
         <div className="space-y-8">
           {posts?.map((post) => {
@@ -59,10 +59,10 @@ export default async function BlogPage() {
             return (
               <article
                 key={post.id}
-                className="bg-white border border-gray-200 rounded-md overflow-hidden hover:shadow-sm transition-shadow"
+                className="overflow-hidden rounded-md border border-gray-200 bg-white transition-shadow hover:shadow-sm"
               >
                 <Link href={`/blog/${post.slug}`} className="block p-6">
-                  <div className="flex flex-wrap gap-2 mb-3">
+                  <div className="mb-3 flex flex-wrap gap-2">
                     {post.keywords.map((keyword, index) => (
                       <span
                         key={index}
@@ -73,13 +73,11 @@ export default async function BlogPage() {
                     ))}
                   </div>
 
-                  <h2 className="text-xl font-semibold text-gray-900 mb-2 hover:text-blue-600">
+                  <h2 className="mb-2 text-xl font-semibold text-gray-900 hover:text-blue-600">
                     {post.title}
                   </h2>
 
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                    {post.description}
-                  </p>
+                  <p className="mb-4 line-clamp-2 text-sm text-gray-600">{post.description}</p>
 
                   <div className="flex items-center gap-4 text-xs text-gray-500">
                     <div className="flex items-center gap-1">
@@ -103,7 +101,7 @@ export default async function BlogPage() {
           })}
 
           {(!posts || posts.length === 0) && (
-            <div className="text-center py-12 border border-gray-200 rounded-md">
+            <div className="rounded-md border border-gray-200 py-12 text-center">
               <FaGithub className="mx-auto h-12 w-12 text-gray-400" />
               <h3 className="mt-2 text-sm font-medium text-gray-900">No blog posts found</h3>
               <p className="mt-1 text-sm text-gray-500">
