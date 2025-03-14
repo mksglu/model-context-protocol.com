@@ -4,6 +4,13 @@ import Link from 'next/link';
 
 import CategoryList from '@/components/core/servers/CategoryList';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
   Pagination,
@@ -21,15 +28,16 @@ import {
   searchServers,
 } from '@/backend/queries/servers';
 
-import { Code, Search, Star } from 'lucide-react';
+import { ChevronDown, Code, Search, Star } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa6';
 
-// Server Component
 interface ServersPageProps {
   searchParams: {
     page?: string;
     category?: string;
     search?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
   };
 }
 
@@ -40,12 +48,30 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
   const currentPage = searchParams.page ? parseInt(searchParams.page) : 1;
   const currentCategory = searchParams.category || 'All';
   const searchQuery = searchParams.search || '';
+  const sortBy = searchParams.sortBy || 'stars';
+  const sortOrder = (searchParams.sortOrder as 'asc' | 'desc') || 'desc';
 
   const { data: servers, totalPages } = searchQuery
     ? await searchServers(searchQuery, currentPage, 15, currentCategory)
-    : await getServersWithPagination(currentPage, 15, currentCategory);
+    : await getServersWithPagination(currentPage, 15, currentCategory, sortBy, sortOrder);
 
   const categoryCounts = await getCategoryCounts();
+
+  const sortOptions = [
+    { label: 'Stars (Descending)', value: 'stars-desc' },
+    { label: 'Stars (Ascending)', value: 'stars-asc' },
+    { label: 'Name (A-Z)', value: 'name-asc' },
+    { label: 'Name (Z-A)', value: 'name-desc' },
+  ];
+
+  const currentSort = `${sortBy}-${sortOrder}`;
+
+  const hasActiveFilters =
+    searchQuery !== '' ||
+    currentCategory !== 'All' ||
+    currentPage !== 1 ||
+    (sortBy !== 'stars' && sortBy !== undefined) ||
+    (sortOrder !== 'desc' && sortOrder !== undefined);
 
   return (
     <div className="min-h-screen bg-white">
@@ -61,7 +87,7 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                 Browse and discover Model Context Protocol compatible servers
               </p>
             </div>
-            <div className="mt-3 flex flex-wrap gap-2 sm:gap-3 md:ml-4 md:mt-0">
+            <div className="mt-3 flex flex-wrap items-center gap-2 sm:gap-3 md:ml-4 md:mt-0">
               <a
                 href="https://github.com/mksglu/mcp-base"
                 target="_blank"
@@ -130,7 +156,48 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                       ? 'All servers'
                       : `${currentCategory} servers`}
                 </h2>
-                <span className="text-xs text-gray-500 sm:text-sm">All</span>
+                <div className="flex items-center gap-2">
+                  {hasActiveFilters && (
+                    <Link
+                      href="/servers"
+                      className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none sm:px-4 sm:py-2 sm:text-sm"
+                    >
+                      Clear Filters
+                    </Link>
+                  )}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm" className="flex items-center gap-1">
+                        <span className="text-xs sm:text-sm">
+                          {sortOptions.find((opt) => opt.value === currentSort)?.label || 'Sırala'}
+                        </span>
+                        <ChevronDown className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      {sortOptions.map((option) => {
+                        const [sortByValue, sortOrderValue] = option.value.split('-');
+                        return (
+                          <DropdownMenuItem key={option.value} asChild>
+                            <Link
+                              href={{
+                                pathname: '/servers',
+                                query: {
+                                  ...searchParams,
+                                  sortBy: sortByValue,
+                                  sortOrder: sortOrderValue,
+                                },
+                              }}
+                              className="w-full"
+                            >
+                              {option.label}
+                            </Link>
+                          </DropdownMenuItem>
+                        );
+                      })}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </div>
 
               {/* Server List */}
@@ -223,14 +290,15 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                               currentCategory !== 'All'
                                 ? `&category=${encodeURIComponent(currentCategory)}`
                                 : ''
-                            }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`}
+                            }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}${
+                              sortBy !== 'stars' ? `&sortBy=${sortBy}` : ''
+                            }${sortOrder !== 'desc' ? `&sortOrder=${sortOrder}` : ''}`}
                             className="text-xs hover:bg-blue-500 sm:text-sm"
                           />
                         </PaginationItem>
                       )}
 
                       {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-                        // Show first page, last page, and pages around current page
                         if (
                           page === 1 ||
                           page === totalPages ||
@@ -243,7 +311,9 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                                   currentCategory !== 'All'
                                     ? `&category=${encodeURIComponent(currentCategory)}`
                                     : ''
-                                }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`}
+                                }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}${
+                                  sortBy !== 'stars' ? `&sortBy=${sortBy}` : ''
+                                }${sortOrder !== 'desc' ? `&sortOrder=${sortOrder}` : ''}`}
                                 isActive={page === currentPage}
                                 className="h-8 w-8 text-xs hover:bg-blue-500 sm:h-10 sm:w-10 sm:text-sm"
                               >
@@ -253,7 +323,6 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                           );
                         }
 
-                        // Show ellipsis for gaps
                         if (
                           (page === 2 && currentPage > 3) ||
                           (page === totalPages - 1 && currentPage < totalPages - 2)
@@ -275,7 +344,9 @@ export default async function ServersPage({ searchParams }: ServersPageProps) {
                               currentCategory !== 'All'
                                 ? `&category=${encodeURIComponent(currentCategory)}`
                                 : ''
-                            }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}`}
+                            }${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''}${
+                              sortBy !== 'stars' ? `&sortBy=${sortBy}` : ''
+                            }${sortOrder !== 'desc' ? `&sortOrder=${sortOrder}` : ''}`}
                             className="text-xs hover:bg-blue-500 sm:text-sm"
                           />
                         </PaginationItem>

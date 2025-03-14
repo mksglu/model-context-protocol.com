@@ -22,7 +22,9 @@ export async function getTopClients(limit: number = 10) {
 export async function getClientsWithPagination(
   page: number = 1,
   pageSize: number = 15,
-  category?: string
+  category?: string,
+  sortBy: string = 'stars',
+  sortOrder: 'asc' | 'desc' = 'desc'
 ) {
   const supabase = createClient();
 
@@ -49,7 +51,7 @@ export async function getClientsWithPagination(
     .from('clients')
     .select('id, name, html_url, description, language, stars, categories, slug')
     .eq('is_active', true)
-    .order('stars', { ascending: false })
+    .order(sortBy, { ascending: sortOrder === 'asc' })
     .range(from, to);
 
   if (category && category !== 'All') {
