@@ -2,11 +2,12 @@ import './globals.css';
 
 import type { Metadata } from 'next';
 import { IBM_Plex_Sans } from 'next/font/google';
-import { Analytics } from "@vercel/analytics/react";
 
 import ScrollToTop from '@/components/core/home/ScrollToTop';
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
+
+import { Analytics } from '@vercel/analytics/react';
 
 import SupabaseProvider from './providers';
 
@@ -20,6 +21,10 @@ export const metadata: Metadata = {
   title: 'Model Context Protocol | MCP',
   description:
     'Discover and list high-performance Model Context Protocol servers. The premier platform for AI model deployment, offering a comprehensive directory of MCP servers with real-time availability, performance metrics, and seamless integration capabilities.',
+  icons: {
+    icon: '/mcp-favicon.png',
+    apple: '/mcp-favicon.png',
+  },
 };
 
 export default function RootLayout({
